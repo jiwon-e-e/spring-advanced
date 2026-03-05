@@ -16,8 +16,6 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class CheckAdminIntercepotor implements HandlerInterceptor {
-    private final JwtUtil jwtUtil;
-
     // pre -> 이전의 의미
     // 여기 controller method 가 존재
     // post 가 존재 (이후)
@@ -26,12 +24,19 @@ public class CheckAdminIntercepotor implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler) throws IOException{
 
-        String jwt = jwtUtil.substringToken(request.getHeader("Authorization"));
+        String header = request.getHeader("Authorization");
+        if (header == null){
+            throw new InvalidRequestException("토큰이 없습니다.");
+        }
         String role = (String) request.getAttribute("userRole");
-        log.info(role +" "+UserRole.ADMIN);
+        if (role == null){
+            throw new InvalidRequestException("역할 정보가 없습니다.");
+        }
+
+//        log.info(role +" "+UserRole.ADMIN);
 
         if (UserRole.of(role) != UserRole.ADMIN){
-            log.warn("관리자 아님, 접근 거부 {}", jwtUtil.extractClaims(jwt).getSubject());
+            log.warn("관리자 아님, 접근 거부됨: 접근 id: {}", request.getAttribute("userId"));
             throw new InvalidRequestException("관리자 아닌디?");
         }
 
