@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CheckAdminIntercepotor implements HandlerInterceptor {
+public class CheckAdminInterceptor implements HandlerInterceptor {
     // pre -> 이전의 의미
     // 여기 controller method 가 존재
     // post 가 존재 (이후)
