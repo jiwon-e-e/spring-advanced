@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     private final AuthUserArgumentResolver authUserArgumentResolver;
-    private final CheckAdminIntercepotor checkAdminIntercepotor;
+    private final CheckAdminInterceptor checkAdminInterceptor;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers){
@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(checkAdminIntercepotor)
+        registry.addInterceptor(checkAdminInterceptor)
                 .addPathPatterns("/admin/**");
     }
 }
