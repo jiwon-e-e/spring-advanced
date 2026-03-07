@@ -17,9 +17,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,8 +65,8 @@ class UserAdminServiceTest {
     }
 
     @Test
-    @DisplayName("성공 - 변경")
-    void changeUserRole() {
+    @DisplayName("실패 - 동일한 역할로 변경")
+    void changeUserRole_failed_by_equal_role() {
         //given
         Long userId = 1L;
         String userRoleString = "USER";

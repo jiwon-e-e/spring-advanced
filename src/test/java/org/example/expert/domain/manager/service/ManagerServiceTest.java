@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,7 +81,6 @@ class ManagerServiceTest {
     void saveManager_failed_by_todo_not_found() {
         // given
         AuthUser authUser = new AuthUser(1L, "testUser@email.com", UserRole.USER);
-        //User user = User.fromAuthUser(authUser);  // 일정을 만든 유저
 
         long todoId = 1L;
         long managerUserId = 2L;
@@ -104,7 +102,6 @@ class ManagerServiceTest {
     void saveManager_failed_by_todo_user_is_null() {
         // given
         AuthUser authUser = new AuthUser(1L, "testUser@email.com", UserRole.USER);
-        //User user = User.fromAuthUser(authUser);  // 일정을 만든 유저
 
         long todoId = 1L;
         Todo todo = new Todo("Test Title", "Test Contents", "Sunny", null);
@@ -147,7 +144,6 @@ class ManagerServiceTest {
         ManagerSaveRequest managerSaveRequest = new ManagerSaveRequest(managerUserId); // request dto 생성
 
         when(todoRepository.findById(todoId)).thenReturn(Optional.of(todo));
-        //when(userRepository.findById(managerUserId)).thenReturn(Optional.of(managerUser));
         // when
         // then
 

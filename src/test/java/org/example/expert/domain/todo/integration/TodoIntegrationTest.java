@@ -60,10 +60,12 @@ public class TodoIntegrationTest {
     @Test
     @DisplayName("성공 - 할 일 저장")
     void saveTodo_succeed() throws Exception{
+        //given
         TodoSaveRequest request = new TodoSaveRequest("title", "contents");
         String weather = weatherClient.getTodayWeather();
         todoRepository.save(new Todo(request.getTitle(), request.getContents(), weather, user));
 
+        //when //then
         mockMvc.perform(post("/todos")
                 .header("Authorization", userToken)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -77,10 +79,12 @@ public class TodoIntegrationTest {
     @Test
     @DisplayName("실패 - 로그인 안 함")
     void saveTodo_failed_by_unAuthorized() throws Exception{
+        //given
         TodoSaveRequest request = new TodoSaveRequest("title", "contents");
         String weather = weatherClient.getTodayWeather();
         todoRepository.save(new Todo(request.getTitle(), request.getContents(), weather, user));
 
+        //when //then
         mockMvc.perform(post("/todos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -90,10 +94,12 @@ public class TodoIntegrationTest {
     @Test
     @DisplayName("실패 - 필수값 누락")
     void saveTodo_failed_by_validation() throws Exception{
+        //given
         TodoSaveRequest request = new TodoSaveRequest("", "contents");
         String weather = weatherClient.getTodayWeather();
         todoRepository.save(new Todo(request.getTitle(), request.getContents(), weather, user));
 
+        //when //then
         mockMvc.perform(post("/todos")
                         .header("Authorization", userToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -105,10 +111,12 @@ public class TodoIntegrationTest {
     @Test
     @DisplayName("성공 - 다건조회 성공")
     void getTodos_succeed() throws Exception{
+        //given
         String weather = weatherClient.getTodayWeather();
         todoRepository.save(new Todo("집가고싶은사람 손?", "는 나였고", weather, user));
         todoRepository.save(new Todo("아니", "님 집이잖아요", weather, user));
 
+        //when //then
         mockMvc.perform(get("/todos")
                 .header("Authorization", userToken))
                 .andExpect(status().isOk())
@@ -128,9 +136,11 @@ public class TodoIntegrationTest {
     @Test
     @DisplayName("성공 - 단건조회 성공")
     void getTodo_succeed() throws Exception{
+        // given
         String weather = weatherClient.getTodayWeather();
         Todo todo = todoRepository.save(new Todo("title", "contents", weather, user));
 
+        //when //then
         mockMvc.perform(get("/todos/{todoId}", todo.getId())
                 .header("Authorization", userToken))
                 .andExpect(status().isOk())
@@ -138,24 +148,5 @@ public class TodoIntegrationTest {
                 .andExpect(jsonPath("$.contents").value("contents"))
                 .andExpect(jsonPath("$.user.email").value("testUser@email.com"));
     }
-
-//    @DisplayName("실패 - id 오류")
-
-//    @Test
-//    @DisplayName("실패 - 권한 없음")
-//    void getTodo_failed_by_id_is_null() throws Exception{
-//        String weather = weatherClient.getTodayWeather();
-//        Todo todo = todoRepository.save(new Todo("title", "contents", weather, user));
-//
-//        mockMvc.perform(get("/todos/{todoId}", todo.getId())
-//                        .header("Authorization", userToken))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.title").value("title"))
-//                .andExpect(jsonPath("$.contents").value("contents"))
-//                .andExpect(jsonPath("$.user.email").value("testUser@email.com"));
-//    }
-
-
-
 
 }

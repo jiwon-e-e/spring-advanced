@@ -9,8 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -21,7 +19,7 @@ class AuthUserArgumentResolverTest {
 
     @Test
     @DisplayName("실패 - @Auth 어노테이션은 있는데 타입이 AuthUser가 아님")
-    void supportsParameter_throwsException_whenTypeMismatch() {
+    void supportsParameter_failed_by_not_AuthUser_type() {
         // given
         MethodParameter parameter = mock(MethodParameter.class);
         given(parameter.getParameterAnnotation(Auth.class)).willReturn(mock(Auth.class));

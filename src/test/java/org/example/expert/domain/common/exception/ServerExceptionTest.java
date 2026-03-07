@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ServerExceptionTest {
 
@@ -14,10 +13,8 @@ class ServerExceptionTest {
         // given
         String errorMessage = "인증이 필요합니다.";
 
-        // when & then
-        assertThatThrownBy(() -> {
-            throw new ServerException(errorMessage);
-        })
+        //when //then
+        assertThatThrownBy(() -> {throw new ServerException(errorMessage);})
                 .isInstanceOf(ServerException.class)
                 .hasMessageContaining(errorMessage);
     }

@@ -21,8 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-//import static org.springframework.http.RequestEntity.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -72,9 +70,12 @@ public class CommentIntegrationTest {
     }
     // 댓글 저장
     @Test
+    @DisplayName("성공 - 댓글 저장")
     void save_comment_succeed() throws Exception{
+        //given
         CommentSaveRequest commentSaveRequest = new CommentSaveRequest("contents");
 
+        //when //then
         mockMvc.perform(post("/todos/{todoId}/comments", savedTodo.getId())
                         .header("Authorization", userToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,8 +90,10 @@ public class CommentIntegrationTest {
     // - 인증실패 authUser = null
     @Test
     void save_comment_failed_by_authUser_is_null() throws Exception{
+        //given
         CommentSaveRequest commentSaveRequest = new CommentSaveRequest("contents");
 
+        //when //then
         mockMvc.perform(post("/todos/{todoId}/comments", savedTodo.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentSaveRequest)))
@@ -100,8 +103,10 @@ public class CommentIntegrationTest {
     // - validation 내용 누락
     @Test
     void save_comment_failed_by_validation() throws Exception{
+        //given
         CommentSaveRequest commentSaveRequest = new CommentSaveRequest("");
 
+        //when //then
         mockMvc.perform(post("/todos/{todoId}/comments", savedTodo.getId())
                         .header("Authorization", userToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,9 +118,11 @@ public class CommentIntegrationTest {
     @Test
     @DisplayName("성공 - 댓글 조회")
     void getComments_succeed() throws Exception{
+        //given
         commentRepository.save(new Comment("이건 첫번째 레슨...", user, savedTodo));
         commentRepository.save(new Comment("이건 두번째 레슨...", adminUser, savedTodo));
 
+        //when //then
         mockMvc.perform(get("/todos/{todoId}/comments", savedTodo.getId())
                 .header("Authorization", userToken))
                 .andExpect(status().isOk())
@@ -130,8 +137,10 @@ public class CommentIntegrationTest {
     @Test
     @DisplayName("성공 - 댓글 삭제")
     void deleteComment_succeed() throws Exception{
+        //given
         Comment savedComment = commentRepository.save(new Comment("이건 첫번째 레슨...", user, savedTodo));
 
+        //when //then
         mockMvc.perform(delete("/admin/comments/{commentId}", savedComment.getId())
                 .header("Authorization", adminToken))
                 .andExpect(status().isOk());
@@ -141,8 +150,10 @@ public class CommentIntegrationTest {
     @Test
     @DisplayName("실패 - 권한 없음")
     void deleteComment_failed_by_unauthorized() throws Exception{
+        //given
         Comment savedComment = commentRepository.save(new Comment("이건 첫번째 레슨...", user, savedTodo));
 
+        //when //then
         mockMvc.perform(delete("/admin/comments/{commentId}", savedComment.getId())
                         .header("Authorization", userToken))
                 .andExpect(status().isBadRequest());

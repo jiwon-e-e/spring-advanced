@@ -2,25 +2,15 @@ package org.example.expert.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.InvalidClaimException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.mockito.InjectMocks;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import io.jsonwebtoken.Claims;
 
@@ -30,10 +20,10 @@ import java.io.StringWriter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class JwtFilterTest {
 
-    @InjectMocks
+//    @InjectMocks
     private JwtFilter jwtFilter;
     @Mock
     private JwtUtil jwtUtil;
@@ -47,7 +37,6 @@ class JwtFilterTest {
     @BeforeEach
     void setUp() {
         ObjectMapper objectMapper = new ObjectMapper();
-        MockitoAnnotations.openMocks(this);
         jwtFilter = new JwtFilter(jwtUtil, objectMapper);
     }
 
@@ -64,7 +53,7 @@ class JwtFilterTest {
         Claims claims = mock(Claims.class);
         when(jwtUtil.extractClaims(token)).thenReturn(claims);
         when(claims.getSubject()).thenReturn("1");
-        when(claims.get("email", String.class)).thenReturn("testUser@email.com");
+        when(claims.get("email")).thenReturn("testUser@email.com");
         when(claims.get("userRole", String.class)).thenReturn("USER");
 
         //when
@@ -107,7 +96,7 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("실패 - claims 가 null")
-    void doFilter_claims_is_null() throws Exception {
+    void doFilter_failed_by_claims_is_null() throws Exception {
         //given
         String token = "thisisToken";
         StringWriter stringWriter = new StringWriter();
@@ -115,6 +104,7 @@ class JwtFilterTest {
 
         when(request.getRequestURI()).thenReturn("/users/1");
         when(request.getHeader("Authorization")).thenReturn("bearer "+token);
+        when(jwtUtil.substringToken("bearer "+token)).thenReturn(token);
         when(jwtUtil.extractClaims(token)).thenReturn(null);
         when(response.getWriter()).thenReturn(printWriter);
 
@@ -130,7 +120,7 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("실패 - 만료된 토큰")
-    void doFilter_expiredJwt_returnsUnauthorized() throws Exception {
+    void doFilter_failed_by_expired_token() throws Exception {
         //given
 
         String token = "thisis.expired.token";
@@ -155,7 +145,7 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("실패 - 검증이 되지 않는 토큰")
-    void doFilter_badRequest() throws Exception {
+    void doFilter_failed_by_invalid_token() throws Exception {
         //given
 
         String token = "thisis.Malformed.token";
@@ -181,7 +171,7 @@ class JwtFilterTest {
 
     @Test
     @DisplayName("실패 - 예상치 못한 오류")
-    void doFilter_500() throws Exception {
+    void doFilter_by_not_expected_error() throws Exception {
         //given
         String token = "thisistoken";
         StringWriter stringWriter = new StringWriter();

@@ -24,7 +24,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -121,7 +120,7 @@ class AuthServiceTest {
         //given
         String bearerToken = "thisistoken";
 
-        User user = getUser(email, password, UserRole.USER);
+        User user = getUser();
 
         SigninRequest signinRequest = getSigninRequest(email, password);
 
@@ -159,7 +158,7 @@ class AuthServiceTest {
     @DisplayName("실패 - 비밀번호 불일치")
     public void signin_failed_by_incorrect_pw() {
         //given
-        User user = getUser(email, password, UserRole.USER);
+        User user = getUser();
         SigninRequest signinRequest = getSigninRequest(email, "wrongPW");
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -173,8 +172,8 @@ class AuthServiceTest {
     }
 
     // -----------------------------------------------------------
-    private User getUser(String email, String password, UserRole userRole){
-        User user = new User(email, password, userRole);
+    private User getUser(){
+        User user = new User(email, password, UserRole.USER);
         ReflectionTestUtils.setField(user, "id", 1L);
 
         return user;

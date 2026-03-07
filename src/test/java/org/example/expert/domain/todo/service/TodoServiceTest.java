@@ -28,7 +28,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -93,7 +92,7 @@ class TodoServiceTest {
         // 실제 데이터 리스트
         // 페이지 정보
         // size
-        // todo : page 형태로 mock 만드는거 나중에 정리해두기, empty page 도 같이...
+        // page 형태로 mock 만드는거 나중에 정리해두기, empty page 도 같이... -> TIL 에 작성 완료
 
         when(todoRepository.findAllByOrderByModifiedAtDesc(pageable)).thenReturn(mockTodos);
 
